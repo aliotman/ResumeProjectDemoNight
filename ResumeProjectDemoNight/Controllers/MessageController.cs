@@ -30,6 +30,8 @@ namespace ResumeProjectDemoNight.Controllers
         }
         public IActionResult MessageDetails(int id)
         {
+            ViewData["ActiveMenu"] = "MessageList";
+            ViewData["PageTitle"] = "Mesajlar";
             ViewBag.TotalProjects = _context.Portfolios.Count();
             ViewBag.UnreadMessages = _context.Messages.Count(x => !x.IsRead);
             var value= _context.Messages.Find(id);

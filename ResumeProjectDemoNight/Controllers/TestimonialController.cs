@@ -25,6 +25,8 @@ namespace ResumeProjectDemoNight.Controllers
         [HttpGet]
         public IActionResult CreateTestimonial()
         {
+            ViewData["ActiveMenu"] = "TestimonialList";
+            ViewData["PageTitle"] = "Referanslar";
             ViewBag.TotalProjects = _context.Portfolios.Count();
             ViewBag.UnreadMessages = _context.Messages.Count(x => !x.IsRead);
             return View();
@@ -48,6 +50,8 @@ namespace ResumeProjectDemoNight.Controllers
         [HttpGet]
         public IActionResult UpdateTestimonial(int id)
         {
+            ViewData["ActiveMenu"] = "TestimonialList";
+            ViewData["PageTitle"] = "Referanslar";
             ViewBag.TotalProjects = _context.Portfolios.Count();
             ViewBag.UnreadMessages = _context.Messages.Count(x => !x.IsRead);
             var value = _context.Testimonials.Find(id);

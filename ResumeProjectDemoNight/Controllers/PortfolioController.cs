@@ -25,6 +25,8 @@ namespace ResumeProjectDemoNight.Controllers
         [HttpGet]
         public IActionResult CreatePortfolio() 
         {
+            ViewData["ActiveMenu"] = "Portfolio";
+            ViewData["PageTitle"] = "Projeler";
             ViewBag.TotalProjects = _context.Portfolios.Count();
             ViewBag.UnreadMessages = _context.Messages.Count(x => !x.IsRead);
             return View();
@@ -47,6 +49,8 @@ namespace ResumeProjectDemoNight.Controllers
         [HttpGet]
         public IActionResult UpdatePortfolio(int id)
         {
+            ViewData["ActiveMenu"] = "Portfolio";
+            ViewData["PageTitle"] = "Projeler";
             ViewBag.TotalProjects = _context.Portfolios.Count();
             ViewBag.UnreadMessages = _context.Messages.Count(x => !x.IsRead);
             var value = _context.Portfolios.Find(id);

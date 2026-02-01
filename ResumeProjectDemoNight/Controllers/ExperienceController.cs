@@ -26,6 +26,8 @@ namespace ResumeProjectDemoNight.Controllers
         [HttpGet]
         public IActionResult CreateExperience()
         {
+            ViewData["ActiveMenu"] = "Experience";
+            ViewData["PageTitle"] = "Deneyimler";
             ViewBag.TotalProjects = _context.Portfolios.Count();
             ViewBag.UnreadMessages = _context.Messages.Count(x => !x.IsRead);
             return View();
@@ -47,6 +49,8 @@ namespace ResumeProjectDemoNight.Controllers
         [HttpGet]
         public IActionResult UpdateExperience(int id)
         {
+            ViewData["ActiveMenu"] = "Experience";
+            ViewData["PageTitle"] = "Deneyimler";
             ViewBag.TotalProjects = _context.Portfolios.Count();
             ViewBag.UnreadMessages = _context.Messages.Count(x => !x.IsRead);
             var value = _context.Experiences.Find(id);
