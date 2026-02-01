@@ -1,0 +1,146 @@
+﻿@model List<ResumeProjectDemoNight.Entities.Service>
+
+@{
+    ViewData["Title"] = "Hizmetler";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="flex-1 overflow-y-auto p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-white">Hizmetler</h2>
+                <p class="text-gray-400 text-sm mt-1">Sunduğunuz hizmetleri yönetin</p>
+            </div>
+            <a href="@Url.Action("CreateService")"
+               class="px-5 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg transition-colors font-medium flex items-center gap-2">
+                <span class="material-symbols-outlined text-lg">add</span>
+                Yeni Hizmet
+            </a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Toplam Hizmet</p>
+                        <p class="text-3xl font-bold text-white mt-1">@Model.Count</p>
+                    </div>
+                    <div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-2xl">code</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Ortalama Hizmet Yetenek Düzeyi</p>
+                        <p class="text-3xl font-bold text-white mt-1">
+                            @if (Model.Any())
+                            {
+                                var avgRate = Model.Average(s =>
+                                {
+                                    if (decimal.TryParse(s.Rate, out decimal rate)) return rate;
+                                    return 0;
+                                });
+                                @avgRate.ToString("N0")
+                            }
+                            else
+                            {
+                                <text>0</text>
+                            }
+                            <span class="text-lg">%</span>
+                        </p>
+                    </div>
+                    <div class="size-12 bg-green-500/10 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-green-400 text-2xl">payments</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Son Güncelleme</p>
+                        <p class="text-lg font-semibold text-white mt-1">Bugün</p>
+                    </div>
+                    <div class="size-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-purple-400 text-2xl">schedule</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Grid -->
+        @if (Model.Any())
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach (var service in Model)
+                {
+                    <div class="bg-card-dark rounded-xl border border-gray-800 overflow-hidden hover:border-primary/50 transition-all group">
+                        <!-- Image -->
+                        <div class="aspect-video bg-gray-800 overflow-hidden">
+                            @if (!string.IsNullOrEmpty(service.ImageUrl))
+                            {
+                                <img src="@service.ImageUrl"
+                                     alt="@service.Title"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            }
+                            else
+                            {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-600 text-6xl">code</span>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-6">
+                            <h3 class="text-white font-bold text-lg mb-2 line-clamp-1">@service.Title</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">@service.Description</p>
+
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-yellow-400 text-xl">star</span>
+                                    <span class="text-white font-semibold">@service.Rate</span>
+                                </div>
+                                <span class="text-gray-500 text-xs">ID: @service.ServiceId</span>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center gap-2">
+                                <a href="@Url.Action("UpdateService", new { id = service.ServiceId })"
+                                   class="flex-1 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors font-medium text-center text-sm flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-base">edit</span>
+                                    Düzenle
+                                </a>
+                                <a href="@Url.Action("DeleteService", new { id = service.ServiceId })"
+                                   onclick="return confirm('Bu hizmeti silmek istediğinize emin misiniz?')"
+                                   class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors">
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="bg-card-dark rounded-xl border border-gray-800 p-12 text-center">
+                <div class="size-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-gray-600 text-5xl">code_off</span>
+                </div>
+                <h3 class="text-white font-bold text-xl mb-2">Henüz Hizmet Eklenmemiş</h3>
+                <p class="text-gray-400 mb-6">Sunduğunuz hizmetleri ekleyerek portföyünüzü zenginleştirin</p>
+                <a href="@Url.Action("Add")"
+                   class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg transition-colors font-medium">
+                    <span class="material-symbols-outlined">add</span>
+                    İlk Hizmeti Ekle
+                </a>
+            </div>
+        }
+    </div>
+</div>

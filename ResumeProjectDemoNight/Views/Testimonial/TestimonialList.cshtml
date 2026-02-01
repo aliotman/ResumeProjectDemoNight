@@ -1,0 +1,112 @@
+﻿@model List<ResumeProjectDemoNight.Entities.Testimonial>
+
+@{
+    ViewData["Title"] = "Referanslar";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="flex-1 overflow-y-auto p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-white">Referanslar</h2>
+                <p class="text-gray-400 text-sm mt-1">Müşteri yorumlarını ve referanslarını yönetin</p>
+            </div>
+            <a href="@Url.Action("CreateTestimonial")"
+               class="px-5 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg transition-colors font-medium flex items-center gap-2">
+                <span class="material-symbols-outlined text-lg">add</span>
+                Yeni Referans
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Toplam Referans</p>
+                        <p class="text-3xl font-bold text-white mt-1">@Model.Count</p>
+                    </div>
+                    <div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-2xl">forum</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials Grid -->
+        @if (Model.Any())
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach (var testimonial in Model)
+                {
+                    <div class="bg-card-dark rounded-xl border border-gray-800 p-6 hover:border-primary/50 transition-all">
+                        <!-- Header -->
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="size-14 rounded-full bg-gray-800 border-2 border-gray-700 overflow-hidden flex-shrink-0">
+                                @if (!string.IsNullOrEmpty(testimonial.ImageUrl))
+                                {
+                                    <img src="@testimonial.ImageUrl"
+                                         alt="@testimonial.NameSurname"
+                                         class="w-full h-full object-cover" />
+                                }
+                                else
+                                {
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-gray-600 text-3xl">person</span>
+                                    </div>
+                                }
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-white font-bold text-lg truncate">@testimonial.NameSurname</h3>
+                                <p class="text-gray-400 text-sm truncate">@testimonial.Title</p>
+                            </div>
+                        </div>
+
+                        <!-- Comment -->
+                        <div class="mb-4">
+                            <p class="text-gray-300 text-sm line-clamp-4">
+                                "@testimonial.Comment"
+                            </p>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-800">
+                            <span class="text-gray-500 text-xs">ID: @testimonial.TestimonialId</span>
+                            <div class="flex items-center gap-2">
+                                <a href="@Url.Action("UpdateTestimonial", new { id = testimonial.TestimonialId })"
+                                   class="p-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors"
+                                   title="Düzenle">
+                                    <span class="material-symbols-outlined text-lg">edit</span>
+                                </a>
+                                <a href="@Url.Action("DeleteTestimonial", new { id = testimonial.TestimonialId })"
+                                   onclick="return confirm('Bu referansı silmek istediğinize emin misiniz?')"
+                                   class="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors"
+                                   title="Sil">
+                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="bg-card-dark rounded-xl border border-gray-800 p-12 text-center">
+                <div class="size-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-gray-600 text-5xl">forum</span>
+                </div>
+                <h3 class="text-white font-bold text-xl mb-2">Henüz Referans Eklenmemiş</h3>
+                <p class="text-gray-400 mb-6">Müşteri yorumlarını ekleyerek güvenilirliğinizi artırın</p>
+                <a href="@Url.Action("Create")"
+                   class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg transition-colors font-medium">
+                    <span class="material-symbols-outlined">add</span>
+                    İlk Referansı Ekle
+                </a>
+            </div>
+        }
+    </div>
+</div>

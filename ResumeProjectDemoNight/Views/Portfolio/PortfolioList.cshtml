@@ -1,0 +1,160 @@
+﻿@model List<ResumeProjectDemoNight.Entities.Portfolio>
+
+@{
+    ViewData["Title"] = "Projeler";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="flex-1 overflow-y-auto p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-white">Projeler</h2>
+                <p class="text-gray-400 text-sm mt-1">Portföy projelerinizi yönetin</p>
+            </div>
+            <a href="@Url.Action("CreatePortfolio")"
+               class="px-5 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg transition-colors font-medium flex items-center gap-2">
+                <span class="material-symbols-outlined text-lg">add</span>
+                Yeni Proje
+            </a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Toplam Proje</p>
+                        <p class="text-3xl font-bold text-white mt-1">@Model.Count</p>
+                    </div>
+                    <div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-2xl">layers</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Aktif Projeler</p>
+                        <p class="text-3xl font-bold text-white mt-1">@Model.Count(p => p.Status)</p>
+                    </div>
+                    <div class="size-12 bg-green-500/10 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-green-400 text-2xl">check_circle</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Pasif Projeler</p>
+                        <p class="text-3xl font-bold text-white mt-1">@Model.Count(p => !p.Status)</p>
+                    </div>
+                    <div class="size-12 bg-red-500/10 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-red-400 text-2xl">cancel</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Kategoriler</p>
+                        <p class="text-3xl font-bold text-white mt-1">@Model.Select(p => p.CategoryId).Distinct().Count()</p>
+                    </div>
+                    <div class="size-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-purple-400 text-2xl">category</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        @if (Model.Any())
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach (var portfolio in Model)
+                {
+                    <div class="bg-card-dark rounded-xl border border-gray-800 overflow-hidden hover:border-primary/50 transition-all group">
+                        <!-- Image -->
+                        <div class="aspect-video bg-gray-800 overflow-hidden relative">
+                            @if (!string.IsNullOrEmpty(portfolio.ImageUrl))
+                            {
+                                <img src="@portfolio.ImageUrl"
+                                     alt="@portfolio.ProjectTitle"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            }
+                            else
+                            {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-600 text-6xl">image</span>
+                                </div>
+                            }
+
+                            <!-- Status Badge -->
+                            <div class="absolute top-3 right-3">
+                                @if (portfolio.Status)
+                                {
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-green-500 text-white rounded-full text-xs font-medium">
+                                        <span class="size-1.5 bg-white rounded-full"></span>
+                                        Aktif
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-xs font-medium">
+                                        <span class="size-1.5 bg-gray-400 rounded-full"></span>
+                                        Pasif
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-6">
+                            <h3 class="text-white font-bold text-lg mb-2 line-clamp-1">@portfolio.ProjectTitle</h3>
+
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-gray-500 text-sm">category</span>
+                                <span class="text-gray-400 text-sm">Kategori ID: @portfolio.CategoryId</span>
+                            </div>
+
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-gray-500 text-xs">ID: @portfolio.PortfolioId</span>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center gap-2">
+                                <a href="@Url.Action("UpdatePortfolio", new { id = portfolio.PortfolioId })"
+                                   class="flex-1 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors font-medium text-center text-sm flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-base">edit</span>
+                                    Düzenle
+                                </a>
+                                <a href="@Url.Action("DeletePortfolio", new { id = portfolio.PortfolioId })"
+                                   onclick="return confirm('Bu projeyi silmek istediğinize emin misiniz?')"
+                                   class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors">
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="bg-card-dark rounded-xl border border-gray-800 p-12 text-center">
+                <div class="size-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-gray-600 text-5xl">layers</span>
+                </div>
+                <h3 class="text-white font-bold text-xl mb-2">Henüz Proje Eklenmemiş</h3>
+                <p class="text-gray-400 mb-6">Portföyünüze projeler ekleyerek yeteneklerinizi sergileyin</p>
+                <a href="@Url.Action("CreatePortfolio")"
+                   class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg transition-colors font-medium">
+                    <span class="material-symbols-outlined">add</span>
+                    İlk Projeyi Ekle
+                </a>
+            </div>
+        }
+    </div>
+</div>

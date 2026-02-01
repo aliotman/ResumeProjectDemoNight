@@ -1,0 +1,219 @@
+﻿@model ResumeProjectDemoNight.Entities.Portfolio
+
+@{
+    ViewData["Title"] = "Proje Güncelle";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="flex-1 overflow-y-auto p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-3 mb-2">
+                <a href="@Url.Action("PortfolioList")" class="p-2 hover:bg-gray-800 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined text-gray-400">arrow_back</span>
+                </a>
+                <h2 class="text-2xl font-bold text-white">Proje Güncelle</h2>
+            </div>
+            <p class="text-gray-400 text-sm ml-14">Proje bilgilerini güncelleyin</p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            <input type="hidden" asp-for="PortfolioId" />
+
+            <!-- Image Upload Card -->
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-start gap-6">
+                    <div class="flex-shrink-0">
+                        <div class="w-64 h-40 rounded-lg bg-gray-800 border-2 border-dashed border-gray-700 flex items-center justify-center overflow-hidden">
+
+                            <img id="imagePreview"
+                                 src="@Model.ImageUrl"
+                                 alt="Preview"
+                                 class="w-full h-full object-cover"
+                                 style="display: @(string.IsNullOrEmpty(Model.ImageUrl) ? "none" : "block")" />
+
+                            <span class="material-symbols-outlined text-gray-600 text-5xl"
+                                  id="placeholderIcon"
+                                  style="display: @(string.IsNullOrEmpty(Model.ImageUrl) ? "block" : "none")">
+                                image
+                            </span>
+
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Proje Görseli (URL)</label>
+
+                        <input type="hidden" asp-for="ImageUrl" id="RealImageUrl" />
+
+                        <button type="button"
+                                onclick="openUrlModal()"
+                                class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center gap-2 text-sm font-medium">
+                            <span class="material-symbols-outlined text-lg">link</span>
+                            Görsel URL Değiştir
+                        </button>
+
+                        <p id="urlStatusText" class="text-gray-500 text-xs mt-2">Henüz bir görsel seçilmedi.</p>
+
+                        <img id="imagePreview" src="" class="mt-2 h-20 w-auto rounded hidden object-cover" />
+                    </div>
+                </div>
+            </div>
+            <!-- Project Title -->
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Proje Başlığı
+                    <span class="text-red-400">*</span>
+                </label>
+                <input type="text"
+                       asp-for="ProjectTitle"
+                       class="w-full bg-background-dark border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                       placeholder="Örn: E-Ticaret Web Sitesi"
+                       required />
+            </div>
+
+            <!-- Category Selection -->
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Kategori
+                    <span class="text-red-400">*</span>
+                </label>
+                <select asp-for="CategoryId"
+                        class="w-full bg-background-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        required>
+                    <option value="" class="bg-background-dark">Kategori Seçin</option>
+                    <option value="1" class="bg-background-dark">Web Geliştirme</option>
+                    <option value="2" class="bg-background-dark">Mobil Uygulama</option>
+                    <option value="3" class="bg-background-dark">Desktop Uygulama</option>
+                    <option value="4" class="bg-background-dark">Diğer</option>
+                </select>
+                <p class="text-gray-500 text-xs mt-2">Projenizin kategorisini seçin</p>
+            </div>
+
+            <!-- Status Toggle -->
+            <div class="bg-card-dark rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Proje Durumu</label>
+                        <p class="text-gray-500 text-xs">Projenin sitede görünürlüğünü belirleyin</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox"
+                               asp-for="Status"
+                               class="sr-only peer" />
+                        <div class="w-14 h-7 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-300">Aktif</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Current Values Info -->
+            <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-800">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-gray-500">tag</span>
+                        <div>
+                            <p class="text-gray-400 text-xs">Proje ID</p>
+                            <p class="text-white text-sm font-medium">@Model.PortfolioId</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-gray-500">category</span>
+                        <div>
+                            <p class="text-gray-400 text-xs">Mevcut Kategori</p>
+                            <p class="text-white text-sm font-medium">ID: @Model.CategoryId</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-4">
+                <a href="@Url.Action("PortfolioList")"
+                   class="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors font-medium">
+                    İptal
+                </a>
+                <button type="submit"
+                        class="px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg transition-colors font-medium flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">save</span>
+                    Değişiklikleri Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="urlModal" class="fixed inset-0 z-[60] hidden bg-black/50 backdrop-blur-sm flex items-center justify-center transition-opacity">
+    <div class="bg-sidebar-dark border border-slate-800 rounded-xl p-6 w-full max-w-md shadow-2xl transform scale-100 transition-all">
+
+        <h3 class="text-lg font-bold text-white mb-4">Görsel URL'si Girin</h3>
+
+        <div class="mb-4">
+            <label class="block text-sm text-slate-400 mb-1">Resim Bağlantısı</label>
+            <input type="text"
+                   id="modalUrlInput"
+                   class="w-full bg-background-dark border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary placeholder-slate-600"
+                   placeholder="https://ornek-site.com/resim.jpg">
+        </div>
+
+        <div class="flex justify-end gap-3">
+            <button type="button" onclick="closeUrlModal()" class="px-4 py-2 text-slate-400 hover:text-white transition-colors text-sm font-medium">
+                İptal
+            </button>
+            <button type="button" onclick="saveUrlFromModal()" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm font-medium">
+                Onayla
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Modalı Aç
+    function openUrlModal() {
+        document.getElementById('urlModal').classList.remove('hidden');
+        // Varsa mevcut değeri inputa doldur
+        document.getElementById('modalUrlInput').value = document.getElementById('RealImageUrl').value;
+    }
+
+    // Modalı Kapat
+    function closeUrlModal() {
+        document.getElementById('urlModal').classList.add('hidden');
+    }
+
+    // URL'yi Kaydet ve Önizlemeyi Güncelle
+    function saveUrlFromModal() {
+        // 1. URL'yi al
+        var urlValue = document.getElementById('modalUrlInput').value;
+
+        // 2. Gizli inputa yaz (Veritabanına gidecek olan şey)
+        document.getElementById('RealImageUrl').value = urlValue;
+
+        // 3. Arayüzü güncelle
+        if (urlValue) {
+            // Yazı güncelle
+            var kisaUrl = urlValue.length > 30 ? urlValue.substring(0, 30) + "..." : urlValue;
+            var statusText = document.getElementById('urlStatusText');
+            statusText.innerText = "Seçilen: " + kisaUrl;
+            statusText.classList.add('text-green-500');
+
+            // Büyük önizleme resmini güncelle
+            var mainPreview = document.getElementById('imagePreview');
+            mainPreview.src = urlValue;
+            mainPreview.style.display = 'block';
+
+            // İkonu gizle
+            document.getElementById('placeholderIcon').style.display = 'none';
+
+        } else {
+            // URL yoksa eski haline döndür
+            document.getElementById('urlStatusText').innerText = "Henüz bir görsel seçilmedi.";
+            document.getElementById('urlStatusText').classList.remove('text-green-500');
+
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('placeholderIcon').style.display = 'block';
+        }
+
+        // 4. Modalı kapat
+        closeUrlModal();
+    }
+</script>

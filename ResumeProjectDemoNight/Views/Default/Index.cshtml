@@ -1,0 +1,48 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en-US">
+
+        <!-- Head -->
+        @await Component.InvokeAsync("_DefaultHeadComponentPartial")
+
+<body>
+
+        <!-- Preloader -->
+        @await Component.InvokeAsync("_DefaultPreloaderComponentPartial")
+
+        <!-- mobile header --> <!-- desktop header -->
+        @await Component.InvokeAsync("_DefaultSidebarComponentPartial")
+
+    <!-- main layout -->
+    <main class="content">
+
+        <!-- section home -->
+        @await Component.InvokeAsync("_DefaultHomeComponentPartial")
+
+        <!-- section about -->
+        @await Component.InvokeAsync("_DefaultAboutComponentPartial")
+
+        <!-- section services -->
+        @await Component.InvokeAsync("_DefaultServiceComponentPartial")
+        
+        <!-- section experience -->
+        @await Component.InvokeAsync("_DefaultExperienceComponentPartial")
+
+        <!-- section works -->
+        @await Component.InvokeAsync("_DefaultPortfolioComponentPartial")
+
+        <!-- section testimonials -->
+        @await Component.InvokeAsync("_DefaultTestimonialComponentPartial")
+
+        <!-- section contact -->
+        @await Component.InvokeAsync("_DefaultContactComponentPartial")
+
+    </main>
+
+    @await Component.InvokeAsync("_DefaultScriptsComponentPartial")
+
+</body>
+</html>
